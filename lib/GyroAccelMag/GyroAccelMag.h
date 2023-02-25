@@ -11,6 +11,8 @@ private:
     boolean _flipZ;
     float roll;
     float pitch;
+    float heading;
+    void calcAttitude(float ax, float ay, float az, float mx, float my, float mz);
    
 public:
     IMU();
@@ -23,6 +25,7 @@ public:
     float getAccelX();
     float getAccelY();
     float getAccelZ();
+    
 
     
 };
