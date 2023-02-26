@@ -29,14 +29,14 @@ void GPS::initGPS(){
 }
 
 bool GPS::updateGPSdata(){
-    if (i2cGPSconnection.available() > 0)
+    while (i2cGPSconnection.available() > 0)
     {
         if (gpsModule.encode(i2cGPSconnection.read()))
         {
-            if (gpsModule.time.isValid())
-            {
-                return true;
-            }  
+            // if (gpsModule.time.isValid())
+            // {
+            //     return true;
+            // }  
         }
         else
         {

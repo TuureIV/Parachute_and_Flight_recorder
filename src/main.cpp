@@ -80,7 +80,6 @@ void loop(){
       if ((lastPrint + DEBUG_PRINT_RATE) < millis())
       {
         if (gyroAccelMag.readSensors()){
-          Serial.println("sensors availuable");
           #ifdef PLOTTER_VIEW
             Serial.print("Gyro X ");
             Serial.println(gyroAccelMag.getGyroX());
@@ -88,11 +87,19 @@ void loop(){
             Serial.println(gyroAccelMag.getGyroY());
             Serial.print("Gyro Z ");
             Serial.println(gyroAccelMag.getGyroZ());
-            gps.updateGPSdata();
-            Serial.println("Lat: " + String(gps.getLat()) + " Lon: " + String(gps.getLon()) + " Alt: " + String(gps.getAlt()) +
-            " GPS time: " + gps.getGPStime());
+            //if (gps.updateGPSdata()){
+              Serial.println("GPS data updated");
+              Serial.println("Lat: " + String(gps.getLat()) + " Lon: " + String(gps.getLon()) + " Alt: " + String(gps.getAlt()) +
+              " GPS time: " + gps.getGPStime());
+            //}
+            builtinButton.checkButtonPress();
+            if (!builtinButton.getButtonState())
+            {
+              while (1);
+              
+            }
             
-            // Check if user wants to stop logging
+          
             
 
           #endif
