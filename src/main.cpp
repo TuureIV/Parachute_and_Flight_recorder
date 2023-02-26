@@ -6,7 +6,6 @@
 #include "GyroAccelMag.h"
 #include "Device.h"
 #include "GPS.h"
-#include <SoftwareSerial.h>
 
 #define DEBUG
 #define PLOTTER_VIEW
@@ -31,6 +30,8 @@ MicroSD sdCard;
 void setup(){
   Serial.begin(115200);
   Wire.begin();
+  Serial.println("Initializing the GPS");
+  gps.initGPS();
   builtinLed.initLed();
   builtinButton.initButton();
   if (!sdCard.initMicroSD())
@@ -50,43 +51,51 @@ void setup(){
   Serial.println(status, HEX);
   Serial.println("Should be 0x683D");
   Serial.println();
-  Serial.println("Initializing the GPS");
-  gps.initGPS();
+  
+ 
 
 
-builtinLed.ledON();
-delay(2000);
-builtinLed.toggleLed();
+  builtinLed.ledON();
+  delay(2000);
+  builtinLed.toggleLed();
 
-startTime = millis();
 
+  Serial.println("Press 0 to sart ");
+  bool start = false;
+  while (start == false){
+    builtinButton.checkButtonPress();
+    if (builtinButton.getButtonState() == true)
+    {
+      start = true;
+    }
+    
+  }
+  startTime = millis();
 }
 
 void loop(){
     
     #ifdef DEBUG
+    
       if ((lastPrint + DEBUG_PRINT_RATE) < millis())
       {
         if (gyroAccelMag.readSensors()){
-          if (builtinButton.getButtonState()){
+          Serial.println("sensors availuable");
+          #ifdef PLOTTER_VIEW
+            Serial.print("Gyro X ");
+            Serial.println(gyroAccelMag.getGyroX());
+            Serial.print("Gyro Y ");
+            Serial.println(gyroAccelMag.getGyroY());
+            Serial.print("Gyro Z ");
+            Serial.println(gyroAccelMag.getGyroZ());
+            gps.updateGPSdata();
+            Serial.println("Lat: " + String(gps.getLat()) + " Lon: " + String(gps.getLon()) + " Alt: " + String(gps.getAlt()) +
+            " GPS time: " + gps.getGPStime());
             
-            Serial.println("sensors availuable");
-            #ifdef PLOTTER_VIEW
-              Serial.print("Gyro X ");
-              Serial.println(gyroAccelMag.getGyroX());
-              Serial.print("Gyro Y ");
-              Serial.println(gyroAccelMag.getGyroY());
-              Serial.print("Gyro Z ");
-              Serial.println(gyroAccelMag.getGyroZ());
-              Serial.println("Lat: " + String(gps.getLat()) + "Lon: " + String(gps.getLon()) + "Alt: " + String(gps.getAlt()) +
-              "GPS time: " + gps.getGPStime());
-              
-              // Check if user wants to stop logging
-              builtinButton.checkButtonPress();
+            // Check if user wants to stop logging
+            
 
-            #endif
-          }
-          builtinButton.checkButtonPress();
+          #endif
       }
         else
         {

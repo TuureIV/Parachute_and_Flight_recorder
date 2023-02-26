@@ -1,61 +1,72 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <SparkFun_u-blox_GNSS_Arduino_Library.h>
+#include <SparkFun_I2C_GPS_Arduino_Library.h>
+#include <TinyGPS++.h>
 #include "GPS.h"
-#include <SoftwareSerial.h>
 
-SoftwareSerial GPSUART(16,17);
-SFE_UBLOX_GNSS gpsModule;
+
+I2CGPS i2cGPSconnection; 
+
+TinyGPSPlus gpsModule;
 
 GPS::GPS()
 {
 }
 void GPS::initGPS(){
     
-   do {
-    Serial.println("GPS: trying 38400 baud");
-    GPSUART.begin(38400);
-    if (gpsModule.begin(GPSUART) == true) break;
+    
+   if (i2cGPSconnection.begin() == false) //Connect to the u-blox module using Wire port
+  {
+    Serial.println(F("u-blox GNSS not detected at default I2C address. Please check wiring. Freezing."));
+    while (1);
+  }
+  else
+  {
 
-    delay(100);
-    Serial.println("GPS: trying 9600 baud");
-    GPSUART.begin(9600);
-    if (gpsModule.begin(GPSUART) == true) {
-        Serial.println("GPS: connected at 9600 baud, switching to 38400");
-        gpsModule.setSerialRate(38400);
-        delay(100);
-    } else {
-        gpsModule.factoryReset();
-        delay(2000); //Wait a bit before trying again to limit the Serial output
-    }
-  } while(1);
-  Serial.println("GPS serial connected");
+  }
+  
 
-  gpsModule.setUART1Output(COM_TYPE_UBX);
-  gpsModule.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
-  gpsModule.saveConfiguration();        //Save the current settings to flash and BBR
 }
+
+bool GPS::updateGPSdata(){
+    if (i2cGPSconnection.available() > 0)
+    {
+        if (gpsModule.encode(i2cGPSconnection.read()))
+        {
+            if (gpsModule.time.isValid())
+            {
+                return true;
+            }  
+        }
+        else
+        {
+            return false;
+        }
+        
+    }  
+}
+
 
 
 long GPS::getLat(){
-    return gpsModule.getLatitude();
+    return gpsModule.location.lat();
 }
 
 long GPS::getLon(){
-    return gpsModule.getLongitude();
+    return gpsModule.location.lng();
 }
 
 long GPS::getAlt(){
-    return gpsModule.getAltitude();
+    return gpsModule.altitude.meters();
 }
 
 byte GPS::getSIV(){
-    return gpsModule.getSIV();
+    return gpsModule.satellites.value();
 }
 
 String GPS::getGPStime(){
-    return String(gpsModule.getDay()) + "." + String(gpsModule.getMonth()) + "." + String(gpsModule.getYear()) + "_" +
-            String(gpsModule.getHour()) + "." + String(gpsModule.getMinute()) + "." + String(gpsModule.getSecond());
+    return String(gpsModule.date.day()) + "." + String(gpsModule.date.month()) + "." + String(gpsModule.date.year()) + "_" +
+            String(gpsModule.time.hour()) + "." + String(gpsModule.time.minute()) + "." + String(gpsModule.time.second());
 }
 
 GPS::~GPS()

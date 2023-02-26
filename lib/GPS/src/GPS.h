@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <SparkFun_u-blox_GNSS_Arduino_Library.h>
-#include <SoftwareSerial.h>
+
 
 
 class GPS
@@ -15,6 +14,7 @@ public:
     GPS(/* args */);
 
     void initGPS();
+    bool updateGPSdata();
     long getLat();
     long getLon();
     long getAlt();
