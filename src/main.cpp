@@ -6,6 +6,7 @@
 #include "GyroAccelMag.h"
 #include "Device.h"
 #include "GPS.h"
+#include <SoftwareSerial.h>
 
 #define DEBUG
 #define PLOTTER_VIEW

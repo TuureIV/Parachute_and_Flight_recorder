@@ -1,13 +1,13 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <SparkFun_Ublox_Arduino_Library.h>
+#include <SparkFun_u-blox_GNSS_Arduino_Library.h>
 #include "GPS.h"
 #include <SoftwareSerial.h>
 
-SoftwareSerial GPSUART(16, 17);
-SFE_UBLOX_GPS gpsModule;
+SoftwareSerial GPSUART(16,17);
+SFE_UBLOX_GNSS gpsModule;
 
-GPS::GPS(/* args */)
+GPS::GPS()
 {
 }
 void GPS::initGPS(){
