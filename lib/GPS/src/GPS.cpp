@@ -47,7 +47,6 @@ bool GPS::updateGPSdata(){
 }
 
 
-
 long GPS::getLat(){
     return gpsModule.location.lat();
 }

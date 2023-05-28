@@ -16,9 +16,9 @@ public:
     MicroSD(/* args */);
     ~MicroSD();
     bool initMicroSD();
-    bool initLogFile(FileSerial logFile, const char * file_location, const char * file_name);
+    //bool initLogFile(FileSerial logFile, const char * file_location, const char * file_name);
 
-    void logData(FileSerial logFile);
+    void logData(FileSerial logFile, char logData[]);
 };
 
 // Built-in LED

@@ -3,6 +3,7 @@
 #include <SPI.h>
 #include "SD.h"
 #include "Device.h"
+#include <FileSerial.h>
 
 
 
@@ -49,27 +50,11 @@ bool MicroSD::initMicroSD(){
         }   
 }
 
-bool MicroSD::initLogFile(FileSerial logFile, const char * file_location, const char * file_name){
-
-    if(!logFile.begin(&SD, 33, SPI, 10000000, "/sd")){
-        Serial.println("SD begin did not succeed, halting.");
-        // Stops the device
-        while(1);
-
-    }
-
-    logFile.setMaxFileSize(10000);
-    logFile.setWriteBufferSize(80);
-	logFile.startLog(file_location,  file_name);
 
 
-
-
-
-}
-
-void logData(FileSerial logFile){
-
+void MicroSD::logData(FileSerial logFile, char csvBuffer[]){
+    logFile.write(csvBuffer);
+    
 }
 
 MicroSD::~MicroSD()
