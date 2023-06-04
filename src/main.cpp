@@ -122,9 +122,9 @@ void loop(){
           if (gps.updateGPSdata())
           {
             lat = gps.getLat();
-          lon = gps.getLon();
-          alt = gps.getAlt();
-          gpsTime = gps.getGPStime();
+            lon = gps.getLon();
+            alt = gps.getAlt();
+            gpsTime = gps.getGPStime();
           }
           
           sprintf(csvBuffer, "%4.3f,%4.3f,%4.3f,%4.3f,%4.3f,%4.3f", gyroX, gyroY, gyroZ, accelX, accelY, accelZ);
@@ -158,9 +158,6 @@ void loop(){
             while (1);
             
           }
-            
-          
-            
 
           
       }
